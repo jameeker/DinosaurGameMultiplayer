@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="styles.css">
-  <title>Dino Dash: Multiplayer</title>
+  <strong><title>Jumpy Frog</title></strong>
   <link rel+"stylesheet" href="styles.css"
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
 body{
-    background-color: #1DE9B6
+
+    background-color: #1DE9B6;
+    background-image: url("green-polka-dots-md.png");
+
 }
 h1{
     font-family: 'Montserrat', sans-serif;
     font-variant: small-caps;
-    color: black;
+    color: white;
     text-align: center;
     text-decoration: underline;
 
@@ -21,43 +25,73 @@ h1{
 canvas {
     border:1px solid #d3d3d3;
     background-color: #B2EBF2;
+    background-color: #AED581;
+
+
 }
 </style>
 </head>
 <body onload="startGame()">
-  <h1>Dino Dash: Multiplayer</h1>
-  <center><h2>A new spin on Chrome's endless runner</h2></center>
-  <center><p>KHE High School Project made by Jaime, Lanese, and Aidan</p></center>
+  <h1>Jumpy Froggy: A Platformer</h1>
+  <center><h2></h2></center>
+<center><button onclick="myFunction()">More info on this page</button></center>
+
+<div style="text-align:left">
 <script>
+function myFunction() {
+    alert("This project was made at KHE 2018 amongst 3 group members, Lanese, Jaime, and Aidan. REPO: https://github.com/jameeker/DinosaurGameMultiplayer");
+}
 
 var myGamePiece;
 var myObstacles = [];
 var myScore;
+//music
+var myGamePiece;
+var myObstacles = [];
+var mySound;
+var myMusic;
 
 function startGame() {
-    myGamePiece = new component(30, 30, "red", 10, 120);
-    myGamePiece.gravity = 0.05;
-    myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+    myGamePiece = new component(30, 30,  "frogs-clipart-clear-background-10.png", 10, 120, "image");
+    myMusic = new sound("532PM.mp3 ");
+    mySound = new sound("532PM.mp3");
+    myMusic.play();
     myGameArea.start();
 }
 
+function startGame() {
+    myGamePiece = new component(30, 30,  "frogs-clipart-clear-background-10.png", 10, 120, "image");
+    new component(35, 35,  "frogs-clipart-clear-background-10.png", 15, 125, "image");
+    myGamePiece = new component(35, 35,  "player2final.png", 15, 125, "image");
+    myGamePiece.gravity = 0.05;
+    myScore = new component("30px", "Consolas", "white", 280, 40, "text");
+    myGameArea.start();
+}
+// <center>
+// <div>
+
 var myGameArea = {
+    //The actual screen size of the game
     canvas : document.createElement("canvas"),
     start : function() {
-        this.canvas.width = 480;
-        this.canvas.height = 270;
+        this.canvas.width = 600;
+        this.canvas.height = 400;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNo = 0;
-        this.interval = setInterval(updateGameArea, 20);
+        this.interval = setInterval(updateGameArea, 5);
         },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
     }
 }
-
 function component(width, height, color, x, y, type) {
     this.type = type;
+    if (type == "image") {
+      this.image = new Image();
+      this.image.src = color;
+    }
     this.score = 0;
     this.width = width;
     this.height = height;
@@ -73,7 +107,12 @@ function component(width, height, color, x, y, type) {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
-        } else {
+        } else if (this.type == "image") {
+          ctx.drawImage(this.image,
+              this.x,
+              this.y,
+              this.width, this.height);
+        }else {
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
@@ -116,17 +155,17 @@ function updateGameArea() {
         }
     }
     myGameArea.clear();
-    myGameArea.frameNo += 1;
+    myGameArea.frameNo += 1; //has to do with the obstacles inside the game
     if (myGameArea.frameNo == 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
-        minHeight = 20;
-        maxHeight = 200;
+        minHeight = 10;
+        maxHeight = 230;
         height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
-        minGap = 50;
-        maxGap = 200;
+        minGap = 110;
+        maxGap = 210;
         gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
-        myObstacles.push(new component(10, height, "green", x, 0));
-        myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
+        myObstacles.push(new component(15, height, "brown", x, 0));
+        myObstacles.push(new component(15, x - height - gap, "brown", x, height + gap));
     }
     for (i = 0; i < myObstacles.length; i += 1) {
         myObstacles[i].x += -1;
@@ -146,10 +185,51 @@ function everyinterval(n) {
 function accelerate(n) {
     myGamePiece.gravity = n;
 }
+
+document.addEventListener('keydown', function(event) {
+  if (event.keyCode == 38) {
+    accelerate(-0.2);
+  }
+// document.addEventListener('keydown', function(event) {
+//     if (event.keyCode == 82) {
+//       restartGame();
+//     }
+})
+document.addEventListener('keyup', function(event) {
+  if (event.keyCode == 38) {
+    accelerate(0.15);
+  }
+  // function accelerate(n) {
+  //     myGamePiece.gravity = n;
+  // }
+  //
+  // document.addEventListener('keydown', function(event) {
+  //   if (event.keyCode == 87) {
+  //     accelerate(-0.2);
+  //   }
+  // })
+  // document.addEventListener('keyup', function(event) {
+  //   if (event.keyCode == 87) {
+  //     accelerate(0.15);
+  //   }
+
+})
+// </center></div>
 </script>
+
+
+<div style="text-align:right">
+
+</div>
+
 <br>
-<button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.15)">ACCELERATE</button>
-<p>Use the ACCELERATE button to stay in the air</p>
-<p>How long can you stay alive?</p>
+<center><button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.15)">PROPEL</button></center>
+
+<center>
+<p>MECHANICS: Use the 'ACCELERATE' button to propel upwards, or 'w' 's' keys and 'uparrow' 'downarrow'</p>
+</center>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>
